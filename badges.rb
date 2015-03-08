@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'prawn'
+require 'csv'
+
 ROOT = File.expand_path('..', __FILE__)
 FONTS = "#{ROOT}/fonts"
 IMAGES = "#{ROOT}/images"
@@ -44,25 +46,31 @@ def render_badge(pdf, x, y, person)
     pdf.stamp_at 'logo', [x + 72 * 0.5, y - (72 * 0.15)]
     pdf.font 'Tungsten'
     pdf.text_box(
-      person[:name],
+      person['name'],
       size: 42, at: [72 * 0.4, 72 * 2],
       width: 72 * 3.2, height: 72 * 1.2, align: :center, valign: :center,
       overflow: :shrink_to_fit, disable_wrap_by_char: true
     )
     pdf.font 'Gotham'
-    pdf.stamp_at 'twitter', [x + 72 * 1.12, y - (72 * 2.26)]
-    pdf.text_box(
-      person[:twitter],
-      size: 12, at: [72 * 1.12 + 16, 72 * 0.74], width: 72 * 2, height: 72 * 0.31
-    )
-    pdf.stamp_at 'github', [x + 72 * 1.12, y - (72 * 2.56)]
-    pdf.text_box(
-      person[:github],
-      size: 12, at: [72 * 1.12 + 16, 72 * 0.44], width: 72 * 2, height: 72 * 0.31
-    )
+    if person['twitter']
+      pdf.stamp_at 'twitter', [x + 72 * 1.12, y - (72 * 2.26)]
+      pdf.text_box(
+        person['twitter'],
+        size: 12, at: [72 * 1.12 + 16, 72 * 0.74], width: 72 * 2, height: 72 * 0.31
+      )
+    end
+    if person['github']
+      pdf.stamp_at 'github', [x + 72 * 1.12, y - (72 * 2.56)]
+      pdf.text_box(
+        person['github'],
+        size: 12, at: [72 * 1.12 + 16, 72 * 0.44],
+        width: 72 * 2, height: 72 * 0.31
+      )
+    end
   end
 end
 
+data = CSV.read(ARGV.first, headers: true)
 data.each_slice(6) do |people|
   y = pdf.bounds.height
   people.each_with_index do |person, index|
