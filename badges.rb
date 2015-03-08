@@ -92,4 +92,4 @@ data.each_slice(6) do |people|
   pdf.start_new_page
 end
 
-pdf.render_file 'out.pdf'
+pdf.render_file 'badges.pdf'
