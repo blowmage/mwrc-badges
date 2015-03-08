@@ -52,18 +52,22 @@ def render_badge(pdf, x, y, person)
       overflow: :shrink_to_fit, disable_wrap_by_char: true
     )
     pdf.font 'Gotham'
+    width = [person['twitter'], person['github']].map {
+      |v| pdf.width_of(v.to_s)
+    }.max
+    start_at = 72 * 2 - (width.to_f / 2) + 8
     if person['twitter']
-      pdf.stamp_at 'twitter', [x + 72 * 1.12, y - (72 * 2.26)]
+      pdf.stamp_at 'twitter', [x + start_at - 16, y - (72 * 2.26)]
       pdf.text_box(
         person['twitter'],
-        size: 12, at: [72 * 1.12 + 16, 72 * 0.74], width: 72 * 2, height: 72 * 0.31
+        size: 12, at: [start_at, 72 * 0.74], width: 72 * 2, height: 72 * 0.31
       )
     end
     if person['github']
-      pdf.stamp_at 'github', [x + 72 * 1.12, y - (72 * 2.56)]
+      pdf.stamp_at 'github', [x + start_at - 16, y - (72 * 2.56)]
       pdf.text_box(
         person['github'],
-        size: 12, at: [72 * 1.12 + 16, 72 * 0.44],
+        size: 12, at: [start_at, 72 * 0.44],
         width: 72 * 2, height: 72 * 0.31
       )
     end
